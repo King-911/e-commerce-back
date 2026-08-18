@@ -34,7 +34,8 @@ RUN sed -ri -s -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites
 RUN sed -ri -s -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 # Instalar dependencias de composer para producción
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias de composer sin ejecutar scripts automáticos de arranque
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Exponer el puerto
 EXPOSE 80
