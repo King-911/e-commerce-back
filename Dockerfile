@@ -8,10 +8,11 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libpq-dev \
+    libzip-dev \
     zip \
     unzip
 
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip xml
 
 # Habilitar mod_rewrite de Apache
 RUN a2enmod rewrite
@@ -33,9 +34,8 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -s -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -s -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
-# Instalar dependencias de composer para producción
-# Instalar dependencias de composer sin ejecutar scripts automáticos de arranque
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+# Instalar dependencias de composer para producción sin ejecutar scripts automáticos
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-scripts -vvv
 
 # Exponer el puerto
 EXPOSE 80
