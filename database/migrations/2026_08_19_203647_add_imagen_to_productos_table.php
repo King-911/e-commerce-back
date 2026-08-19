@@ -1,24 +1,22 @@
 <?php
 
-namespace App\Models;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
-
-class Producto extends Model
+return new class extends Migration
 {
-    use HasUuids;
-
-    protected $fillable = [
-        'nombre',
-        'precio',
-        'stock',
-        'categoria_id',
-        'imagen',
-    ];
-
-    public function categoria()
+    public function up(): void
     {
-        return $this->belongsTo(Categoria::class);
+        Schema::table('productos', function (Blueprint $table) {
+            $table->string('imagen')->nullable()->after('stock');
+        });
     }
-}
+
+    public function down(): void
+    {
+        Schema::table('productos', function (Blueprint $table) {
+            $table->dropColumn('imagen');
+        });
+    }
+};
