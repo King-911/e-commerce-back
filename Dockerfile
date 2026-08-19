@@ -17,9 +17,6 @@ RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 # Habilitar mod_rewrite de Apache
 RUN a2enmod rewrite
 
-# Permitir que .htaccess sobrescriba la configuración (necesario para el enrutamiento de Laravel)
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
-
 # Copiar Composer desde su imagen oficial
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -36,6 +33,9 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -s -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -s -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
+
+# Forzar AllowOverride All para que Laravel pueda usar su .htaccess
+RUN printf '<Directory /var/www/html/public>\n\tAllowOverride All\n\tRequire all granted\n</Directory>\n' >> /etc/apache2/apache2.conf
 
 # Instalar dependencias de composer para producción sin ejecutar scripts automáticos
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-scripts -vvv
