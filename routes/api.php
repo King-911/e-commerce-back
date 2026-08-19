@@ -25,3 +25,4 @@ Route::apiResource('item-carritos', ItemCarritoController::class);
 Route::apiResource('item-ordenes', ItemOrdenController::class);
 Route::apiResource('pagos', PagoController::class);
 Route::get('categorias/{id}/productos', [ProductoController::class, 'porCategoria']);
+Route::get('/carritos/usuario/{usuario_id}', [CarritoController::class, 'obtenerPorUsuario']);

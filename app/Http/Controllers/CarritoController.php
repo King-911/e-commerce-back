@@ -23,9 +23,27 @@ class CarritoController extends Controller
         return response()->json($carrito, 201);
     }
 
+    // NUEVO MÉTODO: Buscar el carrito activo del usuario con sus productos
+    public function obtenerPorUsuario($usuario_id)
+    {
+        $carrito = Carrito::with(['items.producto'])
+            ->where('usuario_id', $usuario_id)
+            ->first();
+
+        if (!$carrito) {
+            return response()->json([
+                'usuario_id' => $usuario_id,
+                'items' => []
+            ], 200);
+        }
+
+        return response()->json($carrito, 200);
+    }
+
     public function show(Carrito $carrito)
     {
-        return $carrito;
+        // Si necesitas mantener el show por ID de carrito, puedes cargarle las relaciones así:
+        return $carrito->load('items.producto');
     }
 
     public function update(Request $request, Carrito $carrito)
