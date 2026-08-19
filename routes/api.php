@@ -15,6 +15,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Rutas personalizadas (deben ir arriba de los apiResource para evitar conflictos de parámetros)
+Route::get('/carritos/usuario/{usuario_id}', [CarritoController::class, 'obtenerPorUsuario']);
+Route::get('categorias/{id}/productos', [ProductoController::class, 'porCategoria']);
+
+// Rutas Resource estándar
 Route::apiResource('categorias', CategoriaController::class);
 Route::apiResource('productos', ProductoController::class);
 Route::post('/login', [UsuarioController::class, 'login']);
@@ -24,5 +29,3 @@ Route::apiResource('carritos', CarritoController::class);
 Route::apiResource('item-carritos', ItemCarritoController::class);
 Route::apiResource('item-ordenes', ItemOrdenController::class);
 Route::apiResource('pagos', PagoController::class);
-Route::get('categorias/{id}/productos', [ProductoController::class, 'porCategoria']);
-Route::get('/carritos/usuario/{usuario_id}', [CarritoController::class, 'obtenerPorUsuario']);
