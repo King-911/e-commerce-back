@@ -17,6 +17,9 @@ RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 # Habilitar mod_rewrite de Apache
 RUN a2enmod rewrite
 
+# Permitir que .htaccess sobrescriba la configuración (necesario para el enrutamiento de Laravel)
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
 # Copiar Composer desde su imagen oficial
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
