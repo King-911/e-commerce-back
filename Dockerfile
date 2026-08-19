@@ -40,5 +40,10 @@ RUN printf '<Directory /var/www/html/public>\n\tAllowOverride All\n\tRequire all
 # Instalar dependencias de composer para producción sin ejecutar scripts automáticos
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-scripts -vvv
 
+# ... (todo tu Dockerfile hasta el COPY de las dependencias)
+
 # Exponer el puerto
 EXPOSE 80
+
+# Cambiamos el CMD para ejecutar la migración antes de iniciar Apache en primer plano
+CMD php artisan migrate --force && apache2-foreground
